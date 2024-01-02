@@ -108,6 +108,7 @@ process {
 			exit
 		}
 	}
+	
 	# Get the access token payload and convert it to JSON
 	$token = $headers['Authorization'].Split(' ')[1]
 	$tokenPayload = $token.Split('.')[1].Replace('-', '+').Replace('_', '/')
