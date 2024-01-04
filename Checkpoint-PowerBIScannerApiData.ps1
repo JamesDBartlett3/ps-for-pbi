@@ -3,7 +3,10 @@
 		Exports latest data from the Power BI Scanner API to a JSON file.
   
   .DESCRIPTION
-    This script will get the latest available data from the Power BI Scanner API and write it to a JSON file.
+    This script will get the latest available data from the Power BI Scanner API and write it to a .json file.
+    By default, the file will be saved in the user's Downloads folder with a timestamp in the filename.
+    The user can specify a custom path for the file to be saved by passing the -OutFile parameter.
+    The user can also specify to open the file in the default application after it's created by passing the -OpenFile switch.
   
   .INPUTS
     - Parameters are currently the only way to pass input to this script
@@ -21,18 +24,18 @@
   
   .EXAMPLE
 		# Export data to "C:\temp\MyPowerBIScannerApiData.json"
-    .\Export-PowerBIScannerApiData.ps1 -OutFile "C:\temp\MyPowerBIScannerApiData.json"
+    .\Checkpoint-PowerBIScannerApiData.ps1 -OutFile "C:\temp\MyPowerBIScannerApiData.json"
   
   .EXAMPLE
 		# Export data to the default location ("~\Downloads\PowerBIScannerApiData_{timestamp}.json")
 		# and open the file in the system's default .json file handler/editor
-    .\Export-PowerBIScannerApiData.ps1 -OpenFile
+    .\Checkpoint-PowerBIScannerApiData.ps1 -OpenFile
   
   .NOTES
     - Requires the Power BI Management module: https://docs.microsoft.com/en-us/powershell/power-bi/overview?view=powerbi-ps
     - Requires the Power BI Scanner API to be enabled: https://learn.microsoft.com/en-us/power-bi/enterprise/service-admin-metadata-scanning#enabling-enhanced-metadata-scanning
-    - Currently only works with workspaces that have been modified in the last 30 days
-    - Tenants with a lot of workspaces may not work properly due to API rate limits
+    - Currently only works with Power BI workspaces that have been modified in the last 30 days
+    - May not work properly in Power BI tenants with a lot of active workspaces (due to API rate limits)
     
     ACKNOWLEDGEMENTS
       - Thanks to my wife (@likeawednesday@techhub.social) for her support and encouragement.
