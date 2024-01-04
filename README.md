@@ -9,7 +9,6 @@
   - [Canvas (.pbix) and Paginated (.rdl) Reports](#canvas-pbix-and-paginated-rdl-reports)
   - [Thin Models _(Power BI semantic models without a corresponding report of the same name in the same workspace)_](#thin-models-power-bi-semantic-models-without-a-corresponding-report-of-the-same-name-in-the-same-workspace)
 
-
 # Authors
 - James D. Bartlett III [[Blog (DataVolume.xyz)](https://datavolume.xyz), [GitHub](https://github.com/JamesDBartlett3), [LinkedIn](https://www.linkedin.com/in/jamesdbartlett3/), [Mastodon](https://techhub.social/@JamesDBartlett3), [Bluesky](https://bsky.app/profile/jamesdbartlett3.bsky.social)]
 - Štěpán Rešl [[Blog (DataMeerkat.com)](https://datameerkat.com), [GitHub](https://github.com/tirnovar), [LinkedIn](https://www.linkedin.com/in/stepan-resl/), [Mastodon](https://techhub.social/@StepanResl), [Bluesky](https://bsky.app/profile/stepanresl.bsky.social)]
@@ -30,7 +29,7 @@ This repository contains PowerShell scripts that can be used to streamline and a
 
 1. Open PowerShell (`pwsh`)
 2. Install any PowerShell modules required by the script(s) you want to run, e.g.:  
-`Install-Module -Name MicrosoftPowerBIMgmt, DataGateway -Scope CurrentUser`
+`Install-Module -Name MicrosoftPowerBIMgmt, ImportExcel, DataGateway, Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser`
 3. Allow PowerShell to run scripts downloaded from the Internet  
 `Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser`
 1. Clone this repository, e.g.:  
@@ -61,7 +60,7 @@ This repository contains PowerShell scripts that can be used to streamline and a
 - [Export-PowerBIReportsFromWorkspaces.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Export-PowerBIReportsFromWorkspaces.ps1)
   - Exports all Power BI canvas (.pbix) and paginated (.rdl) reports from all workspaces specified by the user, saves them in folders named after the workspaces they came from, and optionally extracts the .pbix files' source code using [pbi-tools](https://pbi.tools)
   - TODO: Add support for exporting canvas reports as .pbip files (pending future support in either [pbi-tools](https://pbi.tools) or the [Power BI REST API](https://learn.microsoft.com/en-us/rest/api/power-bi/))
-  
+
 ## Thin Models _(Power BI semantic models without a corresponding report of the same name in the same workspace)_
 - [Get-PowerBIThinModelsFromWorkspaces.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Get-PowerBIThinModelsFromWorkspaces.ps1)
   - Finds all Thin Models to which the user has access and outputs the results as a PSObject with the following properties: 
