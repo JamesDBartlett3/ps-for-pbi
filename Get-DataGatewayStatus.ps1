@@ -4,7 +4,7 @@
   
   .DESCRIPTION
     This script will retrieve the status of all nodes in all Data Gateway clusters to which you have access. 
-		It will prompt you to authenticate with Azure Active Directory if you haven't already done so.
+    It will prompt you to authenticate with Azure Active Directory if you haven't already done so.
   
   .EXAMPLE
     .\Get-DataGatewayStatus.ps1
@@ -18,8 +18,8 @@
     ACKNOWLEDGEMENTS
       - Thanks to my wife (@likeawednesday@techhub.social) for her support and encouragement.
       - Thanks to the PowerShell and Power BI/Fabric communities for being so awesome.
-	
-	.LINK
+  
+  .LINK
     [Source code](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Get-DataGatewayStatus.ps1)
   
   .LINK
@@ -38,24 +38,24 @@
 #Requires -Modules DataGateway
 Write-Host '⏳ Retrieving status of all accesssible Data Gateway nodes...'
 try {
-	Get-DataGatewayAccessToken | Out-Null
+  Get-DataGatewayAccessToken | Out-Null
 }
 catch {
-	Write-Host '🔒 DataGatewayAccessToken required. Launching Azure Active Directory authentication dialog...'
-	Start-Sleep -s 1
-	Login-DataGatewayServiceAccount -WarningAction SilentlyContinue | Out-Null
+  Write-Host '🔒 DataGatewayAccessToken required. Launching Azure Active Directory authentication dialog...'
+  Start-Sleep -s 1
+  Login-DataGatewayServiceAccount -WarningAction SilentlyContinue | Out-Null
 }
 finally {
-	Write-Host '🔑 Power BI Access Token acquired.'
-	Get-DataGatewayCluster | ForEach-Object {
-		$clusterName = $_.Name
-		$clusterId = $_.Id
-		$_ | Select-Object -ExpandProperty MemberGateways | Select-Object -Property `
-		@{l = 'ClusterId'; e = { $clusterId } }, 
-		@{l = 'ClusterName'; e = { $clusterName } }, 
-		@{l = 'NodeId'; e = { $_.Id } }, 
-		@{l = 'NodeName'; e = { $_.Name } }, 
-		@{l = 'GatewayMachine'; e = { ($_.Annotation | ConvertFrom-Json).gatewayMachine } }, 
-		Status, Version, VersionStatus, State
-	}
+  Write-Host '🔑 Power BI Access Token acquired.'
+  Get-DataGatewayCluster | ForEach-Object {
+    $clusterName = $_.Name
+    $clusterId = $_.Id
+    $_ | Select-Object -ExpandProperty MemberGateways | Select-Object -Property `
+    @{l = 'ClusterId'; e = { $clusterId } }, 
+    @{l = 'ClusterName'; e = { $clusterName } }, 
+    @{l = 'NodeId'; e = { $_.Id } }, 
+    @{l = 'NodeName'; e = { $_.Name } }, 
+    @{l = 'GatewayMachine'; e = { ($_.Annotation | ConvertFrom-Json).gatewayMachine } }, 
+    Status, Version, VersionStatus, State
+  }
 }

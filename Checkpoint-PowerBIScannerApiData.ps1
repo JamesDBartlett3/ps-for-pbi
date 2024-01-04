@@ -1,6 +1,6 @@
 <#
   .SYNOPSIS
-		Exports latest data from the Power BI Scanner API to a JSON file.
+    Exports latest data from the Power BI Scanner API to a JSON file.
   
   .DESCRIPTION
     This script will get the latest available data from the Power BI Scanner API and write it to a .json file.
@@ -23,12 +23,12 @@
     Specify to open the JSON file in the default application after it's created.
   
   .EXAMPLE
-		# Export data to "C:\temp\MyPowerBIScannerApiData.json"
+    # Export data to "C:\temp\MyPowerBIScannerApiData.json"
     .\Checkpoint-PowerBIScannerApiData.ps1 -OutFile "C:\temp\MyPowerBIScannerApiData.json"
   
   .EXAMPLE
-		# Export data to the default location ("~\Downloads\PowerBIScannerApiData_{timestamp}.json")
-		# and open the file in the system's default .json file handler/editor
+    # Export data to the default location ("~\Downloads\PowerBIScannerApiData_{timestamp}.json")
+    # and open the file in the system's default .json file handler/editor
     .\Checkpoint-PowerBIScannerApiData.ps1 -OpenFile
   
   .NOTES
@@ -64,10 +64,10 @@ Param(
   [switch]$OpenFile
 )
 
-$currentDate = Get-Date -UFormat "%Y-%m-%d_%H%M"
+$currentDate = Get-Date -UFormat '%Y-%m-%d_%H%M'
 $OutFile = $OutFile -replace 'PowerBIScannerApiData.json', "PowerBIScannerApiData_$currentDate.json"
 $baseUrl = 'https://api.powerbi.com/v1.0/myorg/admin/workspaces'
-$headers = [System.Collections.Generic.Dictionary[[String],[String]]]::New()
+$headers = [System.Collections.Generic.Dictionary[[String], [String]]]::New()
 
 try {
   $headers = Get-PowerBIAccessToken

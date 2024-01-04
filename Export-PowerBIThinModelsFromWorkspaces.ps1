@@ -3,9 +3,9 @@
     Exports one or more "Thin" Models (Power BI Semantic Models with no corresponding Report) from Power BI as PBIX files.
   
   .DESCRIPTION
-		This script will export one or more "Thin" Models (Power BI Semantic Models with no corresponding Report) from Power BI as PBIX files.
-		It can be used to export a single Thin Model by specifying the DatasetId, WorkspaceId, BlankPbix, and OutputFile parameters.
-		It can also be used to export multiple Thin Models by piping the output of the Get-PowerBIThinModelsFromWorkspaces.ps1 script to it.
+    This script will export one or more "Thin" Models (Power BI Semantic Models with no corresponding Report) from Power BI as PBIX files.
+    It can be used to export a single Thin Model by specifying the DatasetId, WorkspaceId, BlankPbix, and OutputFile parameters.
+    It can also be used to export multiple Thin Models by piping the output of the Get-PowerBIThinModelsFromWorkspaces.ps1 script to it.
   
   .PARAMETER DatasetId
     The ID of the Model to export
@@ -69,7 +69,7 @@
       - Thanks to @santisq & @seeminglyscience on PowerShell Discord for their guidance on using a process block to enable streaming inputs from the pipeline.
 
     TODO: Add ExtractWithPbiTools switch parameter
-	
+  
   .LINK
     [Source code](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Export-PowerBIThinModelsFromWorkspaces.ps1)
   
