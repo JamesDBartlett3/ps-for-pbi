@@ -27,17 +27,41 @@
     [Follow the author on BlueSky](https://bsky.app/profile/stepanresl.bsky.social)
 #>
 
+Param(
+  [Parameter(Mandatory = $false)][guid]$WorkspaceID
+)
+
 # PowerShell dependencies
 #Requires -Modules MicrosoftPowerBIMgmt
 
-Login-PowerBI
+$headers = [System.Collections.Generic.Dictionary[[String],[String]]]::New()
 
-$token = (Get-PowerBIAccessToken)['Authorization']
+try {
+  $headers = Get-PowerBIAccessToken
+}
+
+catch {
+  Write-Host '🔒 Power BI Access Token required. Launching Azure Active Directory authentication dialog...'
+  Start-Sleep -s 1
+  Connect-PowerBIServiceAccount -WarningAction SilentlyContinue | Out-Null
+  $headers = Get-PowerBIAccessToken
+  if ($headers) {
+    Write-Host '🔑 Power BI Access Token acquired. Proceeding...'
+  } else {
+    Write-Host '❌ Power BI Access Token not acquired. Exiting...'
+    Exit
+  }
+}
+
+$token = $headers['Authorization']
+
 # Workspace ID
-$groupId = '<ID>'
+if (!$WorkspaceID) {
+  $WorkspaceID = Read-Host -Prompt 'Enter the workspace ID'
+}
 
 # a function that detects the URI of PowerBI the cluster where the workspace is currently located
-function get-powerbiAPIclusterURI () {
+function get-powerbiAPIclusterURI() {
   $reply = Invoke-RestMethod -Uri 'https://api.powerbi.com/v1.0/myorg/datasets' -Headers @{ 'Authorization' = $token } -Method GET
   $unaltered = $reply.'@odata.context'
   $stripped = $unaltered.split('/')[2]
@@ -45,13 +69,13 @@ function get-powerbiAPIclusterURI () {
   return $clusterURI
 }
 
-function getWorkspaceUsageMetrics($workspaceId) {
+function getWorkspaceUsageMetrics($wid) {
   $url = get-powerbiAPIclusterURI
-  $data = Invoke-WebRequest -Uri "$url/$workspaceId/usageMetricsReportV2?experience=power-bi" -Headers @{ 'Authorization' = $token }
+  $data = Invoke-WebRequest -Uri "$url/$wid/usageMetricsReportV2?experience=power-bi" -Headers @{ 'Authorization' = $token }
   $response = $data.Content.ToString().Replace('nextRefreshTime', 'NextRefreshTime').Replace('lastRefreshTime', 'LastRefreshTime') | ConvertFrom-Json
   return $response.models[0].dbName
 }
 
+$result = getWorkspaceUsageMetrics -wid $WorkspaceID
 
-$result = getWorkspaceUsageMetrics -workspaceId $groupId
-$result
+Write-Host "Usage Metrics Dataset ID: $result"
