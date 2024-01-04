@@ -27,8 +27,33 @@
     [Follow the author on BlueSky](https://bsky.app/profile/stepanresl.bsky.social)
 #>
 
+Param(
+  [Parameter(Mandatory=$false)][guid]$TargetDatasetID,
+  [Parameter(Mandatory=$false)][guid]$ReportWorkspaceID,
+  [Parameter(Mandatory=$false)][guid]$ReportID
+)
+
 # PowerShell dependencies
 #Requires -Modules MicrosoftPowerBIMgmt
+
+$headers = [System.Collections.Generic.Dictionary[[String],[String]]]::New()
+
+try {
+  $headers = Get-PowerBIAccessToken
+}
+
+catch {
+  Write-Host '🔒 Power BI Access Token required. Launching Azure Active Directory authentication dialog...'
+  Start-Sleep -s 1
+  Connect-PowerBIServiceAccount -WarningAction SilentlyContinue | Out-Null
+  $headers = Get-PowerBIAccessToken
+  if ($headers) {
+    Write-Host '🔑 Power BI Access Token acquired. Proceeding...'
+  } else {
+    Write-Host '❌ Power BI Access Token not acquired. Exiting...'
+    Exit
+  }
+}
 
 function PostRebind {
   param(
@@ -75,8 +100,7 @@ function ShowPrompt() {
       break
     }
   }
-  Login-PowerBI
-    
+  
   $targetDatasetId = Read-Host -Prompt 'Enter target dataset ID'
   if (!$targetDatasetId) {
     Write-Error 'Invalid dataset id'
@@ -97,5 +121,9 @@ function ShowPrompt() {
   }
 }
 
-<# START OF CODE #>
-ShowPrompt
+# Main
+if ($TargetDatasetID -and $ReportWorkspaceID -and $ReportID) {
+  PostRebind -dataset $TargetDatasetID -group $ReportWorkspaceID -report $ReportID
+} else {
+  ShowPrompt
+}
