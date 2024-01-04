@@ -11,8 +11,8 @@
 
 
 # Authors
-- James D. Bartlett III [[Blog](https://datavolume.xyz), [GitHub](https://github.com/JamesDBartlett3), [LinkedIn](https://www.linkedin.com/in/jamesdbartlett3/), [Mastodon](https://techhub.social/@JamesDBartlett3), [Bluesky](https://bsky.app/profile/jamesdbartlett3.bsky.social)]
-- Štěpán Rešl [[Blog](https://datameerkat.com), [GitHub](https://github.com/tirnovar), [LinkedIn](https://www.linkedin.com/in/stepan-resl/), [Mastodon](https://techhub.social/@StepanResl), [Bluesky](https://bsky.app/profile/stepanresl.bsky.social)]
+- James D. Bartlett III [[Blog (DataVolume.xyz)](https://datavolume.xyz), [GitHub](https://github.com/JamesDBartlett3), [LinkedIn](https://www.linkedin.com/in/jamesdbartlett3/), [Mastodon](https://techhub.social/@JamesDBartlett3), [Bluesky](https://bsky.app/profile/jamesdbartlett3.bsky.social)]
+- Štěpán Rešl [[Blog (DataMeerkat.com)](https://datameerkat.com), [GitHub](https://github.com/tirnovar), [LinkedIn](https://www.linkedin.com/in/stepan-resl/), [Mastodon](https://techhub.social/@StepanResl), [Bluesky](https://bsky.app/profile/stepanresl.bsky.social)]
 
 # Introduction
 This repository contains PowerShell scripts that can be used to streamline and automate tasks in Power BI.
