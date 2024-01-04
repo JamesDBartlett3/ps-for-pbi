@@ -61,7 +61,7 @@ if (!$WorkspaceID) {
 }
 
 # a function that detects the URI of PowerBI the cluster where the workspace is currently located
-function get-powerbiAPIclusterURI() {
+function Get-PowerBiApiClusterUri() {
   $reply = Invoke-RestMethod -Uri 'https://api.powerbi.com/v1.0/myorg/datasets' -Headers @{ 'Authorization' = $token } -Method GET
   $unaltered = $reply.'@odata.context'
   $stripped = $unaltered.split('/')[2]
@@ -69,13 +69,13 @@ function get-powerbiAPIclusterURI() {
   return $clusterURI
 }
 
-function getWorkspaceUsageMetrics($wid) {
-  $url = get-powerbiAPIclusterURI
+function Get-WorkspaceUsageMetrics($wid) {
+  $url = Get-PowerBiApiClusterUri
   $data = Invoke-WebRequest -Uri "$url/$wid/usageMetricsReportV2?experience=power-bi" -Headers @{ 'Authorization' = $token }
   $response = $data.Content.ToString().Replace('nextRefreshTime', 'NextRefreshTime').Replace('lastRefreshTime', 'LastRefreshTime') | ConvertFrom-Json
   return $response.models[0].dbName
 }
 
-$result = getWorkspaceUsageMetrics -wid $WorkspaceID
+$result = Get-WorkspaceUsageMetrics -wid $WorkspaceID
 
 Write-Host "Usage Metrics Dataset ID: $result"
