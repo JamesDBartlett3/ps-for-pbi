@@ -6,7 +6,7 @@
     ----
   
   .EXAMPLE
-    .\Move-RebindReportToDifferentDataset.ps1
+    .\Update-PowerBIReportDatasetBinding.ps1
   
   .NOTES
     ----
