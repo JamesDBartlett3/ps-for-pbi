@@ -41,7 +41,7 @@
       - Thanks to the PowerShell and Power BI/Fabric communities for being so awesome.
 	
   .LINK
-    [Source code](https://github.com/JamesDBartlett3/PowerBits)
+    [Source code](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Export-PowerBIReportsFromWorkspaces.ps1)
   
   .LINK
     [The author's blog](https://datavolume.xyz)

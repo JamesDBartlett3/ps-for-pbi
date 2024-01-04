@@ -61,7 +61,7 @@
       - Thanks to @santisq & @seeminglyscience on PowerShell Discord for their guidance on using a process block to enable streaming inputs from the pipeline.
 	
   .LINK
-    [Source code](https://github.com/JamesDBartlett3/PowerBits)
+    [Source code](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Export-PowerBIThinModelsFromWorkspaces.ps1)
   
   .LINK
     [The author's blog](https://datavolume.xyz)
