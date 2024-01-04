@@ -1,4 +1,4 @@
-# PowerShell for Power BI
+# PowerShell for Power BI (ps-for-pbi)
 
 ## Introduction
 This repository contains PowerShell scripts that can be used to streamline and automate tasks in Power BI.
