@@ -38,7 +38,6 @@
 #Requires -Modules DataGateway
 
 begin {
-  Write-Host '⏳ Retrieving status of all accesssible Data Gateway nodes...'
   try {
     Get-DataGatewayAccessToken | Out-Null
   }
@@ -47,10 +46,11 @@ begin {
     Start-Sleep -s 1
     Login-DataGatewayServiceAccount -WarningAction SilentlyContinue | Out-Null
   }
+  Write-Host '🔑 Power BI Access Token acquired.'
+  Write-Host '⏳ Retrieving status of all accesssible Data Gateway nodes...'
 }
 
 process {
-  Write-Host '🔑 Power BI Access Token acquired.'
   Get-DataGatewayCluster | ForEach-Object {
     $clusterName = $_.Name
     $clusterId = $_.Id
