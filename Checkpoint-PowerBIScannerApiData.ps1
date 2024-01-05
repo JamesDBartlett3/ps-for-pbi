@@ -8,6 +8,12 @@
     The user can specify a custom path for the file to be saved by passing the -OutFile parameter.
     The user can also specify to open the file in the default application after it's created by passing the -OpenFile switch.
   
+  .PARAMETER OutFile
+    The destination path for the JSON file. Defaults to "~\Downloads\PowerBIScannerApiData_{timestamp}.json"
+  
+  .PARAMETER OpenFile
+    Specify to open the JSON file in the default application after it's created.
+  
   .INPUTS
     - Parameters are currently the only way to pass input to this script
     - Pipeline inputs are not yet supported
@@ -15,12 +21,6 @@
   .OUTPUTS
     - A .json file containing all available data from the Power BI Scanner API
     - Pipeline outputs are not yet supported
-  
-  .PARAMETER OutFile
-    The destination path for the JSON file. Defaults to "~\Downloads\PowerBIScannerApiData_{timestamp}.json"
-  
-  .PARAMETER OpenFile
-    Specify to open the JSON file in the default application after it's created.
   
   .EXAMPLE
     # Export data to "C:\temp\MyPowerBIScannerApiData.json"
