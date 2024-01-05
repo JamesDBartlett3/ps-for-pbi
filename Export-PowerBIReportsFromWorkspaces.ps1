@@ -67,45 +67,65 @@ Param(
   [parameter(Mandatory = $false)][int]$ThrottleLimit = 1
 )
 
-[string]$currentDateTime = Get-Date -UFormat "%Y%m%d_%H%M%S"
-[string]$fallbackDir = Join-Path -Path $env:TEMP -ChildPath "PowerBIWorkspaces"
+begin {
+  # Declare the servicePrincipal global variables
+  $global:servicePrincipalId = $null
+  $global:servicePrincipalTenantId = $null
+  $global:servicePrincipalSecret = $null
+  $global:credential = $servicePrincipalId ? (New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $servicePrincipalId, ($servicePrincipalSecret | ConvertTo-SecureString -AsPlainText -Force)) : $null
+  [string]$currentDateTime = Get-Date -UFormat "%Y%m%d_%H%M%S"
+  [string]$fallbackDir = Join-Path -Path $env:TEMP -ChildPath "PowerBIWorkspaces"
 
-$headers = [System.Collections.Generic.Dictionary[[String], [String]]]::New()
+  $headers = [System.Collections.Generic.Dictionary[[String], [String]]]::New()
 
-Function Convert-PbixToProj {
-  Param(
-    [Parameter(Mandatory = $true)][string]$PbixPath,
-    [Parameter(Mandatory = $true)][string]$ShortPath
-  )
-  try {
-    Invoke-Expression pbi-tools | Out-Null
-  }
-  catch {
-    Write-Error "'pbi-tools' command not found. See: https://pbi.tools/tutorials/getting-started-cli.html"
-    Write-Warning $Error[0]
-  }
-  finally {
-    if (!$Error[0]) {
-      $command = "pbi-tools extract -pbixPath ""$PbixPath"""
-      Write-Debug "Running command: $command"
-      Write-Host "📦 Extracting: $ShortPath"
-      Invoke-Expression $command | Out-Null
+  Function Convert-PbixToProj {
+    Param(
+      [Parameter(Mandatory = $true)][string]$PbixPath,
+      [Parameter(Mandatory = $true)][string]$ShortPath
+    )
+    try {
+      Invoke-Expression pbi-tools | Out-Null
+    }
+    catch {
+      Write-Error "'pbi-tools' command not found. See: https://pbi.tools/tutorials/getting-started-cli.html"
+      Write-Warning $Error[0]
+    }
+    finally {
+      if (!$Error[0]) {
+        $command = "pbi-tools extract -pbixPath ""$PbixPath"""
+        Write-Debug "Running command: $command"
+        Write-Host "📦 Extracting: $ShortPath"
+        Invoke-Expression $command | Out-Null
+      }
     }
   }
+  $fn_PbixToProj = ${function:Convert-PbixToProj}.ToString()
 }
 
-$fn_PbixToProj = ${function:Convert-PbixToProj}.ToString()
+process{
 
-try {
-  $headers = Get-PowerBIAccessToken
-}
-catch {
-  Write-Host '🔒 Power BI Access Token required. Launching Azure Active Directory authentication dialog...'
-  Start-Sleep -s 1
-  Connect-PowerBIServiceAccount -WarningAction SilentlyContinue | Out-Null
-  $headers = Get-PowerBIAccessToken
-}
-finally {
+  try {
+    $headers = Get-PowerBIAccessToken
+  }
+  catch {
+    if ($servicePrincipalId) {
+      Connect-PowerBIServiceAccount -ServicePrincipal -Tenant $servicePrincipalTenantId -Credential $credential
+      $headers = Get-PowerBIAccessToken
+    }
+    else {
+      Write-Host '🔒 Power BI Access Token required. Launching Azure Active Directory authentication dialog...'
+      Start-Sleep -s 1
+      Connect-PowerBIServiceAccount -WarningAction SilentlyContinue | Out-Null
+      $headers = Get-PowerBIAccessToken
+    }
+    if ($headers) {
+      Write-Host '🔑 Power BI Access Token acquired. Proceeding...'
+    }
+    else {
+      Write-Host '❌ Power BI Access Token not acquired. Exiting...'
+      exit
+    }
+  }
   
   Write-Host '🔑 Power BI Access Token acquired.'
   
