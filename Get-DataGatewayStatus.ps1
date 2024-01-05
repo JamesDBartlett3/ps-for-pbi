@@ -36,16 +36,20 @@
 #>
 
 #Requires -Modules DataGateway
-Write-Host '⏳ Retrieving status of all accesssible Data Gateway nodes...'
-try {
-  Get-DataGatewayAccessToken | Out-Null
+
+begin {
+  Write-Host '⏳ Retrieving status of all accesssible Data Gateway nodes...'
+  try {
+    Get-DataGatewayAccessToken | Out-Null
+  }
+  catch {
+    Write-Host '🔒 DataGatewayAccessToken required. Launching Azure Active Directory authentication dialog...'
+    Start-Sleep -s 1
+    Login-DataGatewayServiceAccount -WarningAction SilentlyContinue | Out-Null
+  }
 }
-catch {
-  Write-Host '🔒 DataGatewayAccessToken required. Launching Azure Active Directory authentication dialog...'
-  Start-Sleep -s 1
-  Login-DataGatewayServiceAccount -WarningAction SilentlyContinue | Out-Null
-}
-finally {
+
+process {
   Write-Host '🔑 Power BI Access Token acquired.'
   Get-DataGatewayCluster | ForEach-Object {
     $clusterName = $_.Name
@@ -55,7 +59,7 @@ finally {
     @{l = 'ClusterName'; e = { $clusterName } }, 
     @{l = 'NodeId'; e = { $_.Id } }, 
     @{l = 'NodeName'; e = { $_.Name } }, 
-    @{l = 'GatewayMachine'; e = { ($_.Annotation | ConvertFrom-Json).gatewayMachine } }, 
+    @{l = 'ServerName'; e = { ($_.Annotation | ConvertFrom-Json).gatewayMachine } }, 
     Status, Version, VersionStatus, State
   }
 }
