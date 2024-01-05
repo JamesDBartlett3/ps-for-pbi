@@ -15,7 +15,7 @@
     This script does not accept pipeline input.
   
   .OUTPUTS
-    Selected.System.String (one or more objects with the following properties):
+    One or more objects with the following properties:
       - DatasetName
       - DatasetId
       - WebUrl
