@@ -1,10 +1,9 @@
 <#
   .SYNOPSIS
-    Function: Get-PowerBIThinModelsFromWorkspaces
-    Author: @JamesDBartlett3@techhub.social (James D. Bartlett III)
+    Get all "Thin" Models (Power BI Semantic Models without a corresponding report) from Power BI Workspaces
   
   .DESCRIPTION
-    Get all "Thin" Models (Power BI Semantic Models without a corresponding report) from selected Workspaces in parallel
+    Get all "Thin" Models (Power BI Semantic Models without a corresponding report) from selected Power BI Workspaces in parallel, and output them to the pipeline.
   
   .PARAMETER ThrottleLimit
     The maximum number of parallel processes to run. Defaults to 1.
@@ -25,11 +24,11 @@
       - WorkspaceId
   
   .EXAMPLE
-    # Get all Thin Models from all workspaces to which the user has access
-    .\Get-PowerBIThinModelsFromWorkspaces.ps1
+    # Get all Thin Models from all workspaces to which the user has access, one at a time
+    .\Get-PowerBIThinModelsFromWorkspaces.ps1 -ThrottleLimit 1
     
   .EXAMPLE
-    # Get all Thin Models from all workspaces specified by the user in an interactive prompt
+    # Get all Thin Models from all workspaces specified by the user in an interactive prompt, in parallel
     .\Get-PowerBIThinModelsFromWorkspaces.ps1 -Interactive
   
   .NOTES
