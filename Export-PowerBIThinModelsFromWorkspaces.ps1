@@ -41,7 +41,7 @@
   .EXAMPLE
     # Export a single Thin Model as a PBIX file by specifying the DatasetId, WorkspaceId, BlankPbix, and OutputFile parameters
     .\Export-PowerBIThinModelsFromWorkspaces.ps1 -DatasetId "00000000-0000-0000-0000-000000000000" -WorkspaceId "00000000-0000-0000-0000-000000000000" -BlankPbix "C:\blank.pbix" -OutputFile "C:\new.pbix"
-
+	
   .EXAMPLE 
     # Use the Get-PowerBIThinModelsFromWorkspaces.ps1 script with the Interactive switch to pick one or more Thin Models,
     # and pipe the output into Export-PowerBIThinModelsFromWorkspaces.ps1 to export the selected Thin Models as PBIX files
@@ -51,7 +51,7 @@
     # Pipe the output of the Get-PowerBIThinModelsFromWorkspaces.ps1 script to this script, export all detected thin models to which the user has access,
     # and use the OutputFolder parameter to specify that they should be stored in a folder named "PowerBIThinModels" in the user's Downloads directory
     .\Get-PowerBIThinModelsFromWorkspaces.ps1 | .\Export-PowerBIThinModelsFromWorkspaces.ps1 -OutputFolder "$env:USERPROFILE\Downloads\PowerBIThinModels"
-
+	
   .NOTES
     This script does NOT require Azure AD app registration, 
     service principal creation, or any other special setup.
@@ -67,7 +67,7 @@
       - Thanks to my wife (@likeawednesday@techhub.social) for her support and encouragement.
       - Thanks to the PowerShell and Power BI/Fabric communities for being so awesome.
       - Thanks to @santisq & @seeminglyscience on PowerShell Discord for their guidance on using a process block to enable streaming inputs from the pipeline.
-
+		
     TODO: Add ExtractWithPbiTools switch parameter
   
   .LINK

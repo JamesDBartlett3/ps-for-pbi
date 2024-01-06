@@ -75,7 +75,6 @@ begin {
   $global:credential = $servicePrincipalId ? (New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $servicePrincipalId, ($servicePrincipalSecret | ConvertTo-SecureString -AsPlainText -Force)) : $null
   [string]$currentDateTime = Get-Date -UFormat "%Y%m%d_%H%M%S"
   [string]$fallbackDir = Join-Path -Path $env:TEMP -ChildPath "PowerBIWorkspaces"
-
   $headers = [System.Collections.Generic.Dictionary[[String], [String]]]::New()
 
   Function Convert-PbixToProj {

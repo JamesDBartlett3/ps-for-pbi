@@ -91,7 +91,7 @@ Function FileIsBlankPbix($file) {
     Write-Debug "$file is a valid blank pbix file."
     return $true
   }
- else {
+  else {
     Write-Error "$file is NOT a valid blank pbix file."
     return $false
   }
