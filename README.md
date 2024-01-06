@@ -11,7 +11,7 @@
 
 # Authors
 - James D. Bartlett III [[Blog (DataVolume.xyz)](https://datavolume.xyz), [GitHub](https://github.com/JamesDBartlett3), [LinkedIn](https://www.linkedin.com/in/jamesdbartlett3/), [Mastodon](https://techhub.social/@JamesDBartlett3), [Bluesky](https://bsky.app/profile/jamesdbartlett3.bsky.social)]
-- Štěpán Rešl [[Blog (DataMeerkat.com)](https://datameerkat.com), [GitHub](https://github.com/tirnovar), [LinkedIn](https://www.linkedin.com/in/stepan-resl/), [Mastodon](https://techhub.social/@StepanResl), [Bluesky](https://bsky.app/profile/stepanresl.bsky.social)]
+- Štěpán Rešl [[Blog (DataMeerkat.com)](https://datameerkat.com), [GitHub](https://github.com/tirnovar), [LinkedIn](https://www.linkedin.com/in/stepan-resl/), [Mastodon](https://techhub.social/@StepanResl), [Bluesky](https://bsky.app/profile/stepanresl.bsky.social)], [X / Twitter](https://twitter.com/tpnRel1)
 
 # Introduction
 This repository contains PowerShell scripts that can be used to streamline and automate tasks in Power BI.
@@ -52,6 +52,8 @@ This repository contains PowerShell scripts that can be used to streamline and a
   - TODO: Add support for exporting to .json & .csv
 - [Get-DataGatewayStatus.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Get-DataGatewayStatus.ps1)
   - Retrieves the status of all nodes in all Data Gateway clusters to which the user has access
+- [Update-PowerBIReportDatasetBinding.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Update-PowerBIReportDatasetBinding.ps1)
+  - Change connection of report to the specified semantic model
 
 ## Canvas (.pbix) and Paginated (.rdl) Reports
 - [Copy-PowerBIReportContentToBlankPBIXFile.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Copy-PowerBIReportContentToBlankPBIXFile.ps1)
@@ -73,3 +75,12 @@ This repository contains PowerShell scripts that can be used to streamline and a
 - [Export-PowerBIThinModelsFromWorkspaces.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Export-PowerBIThinModelsFromWorkspaces.ps1)
   - Exports all Thin Models specified by the user (as parameter values or piped input), and saves them in folders named after the workspaces they came from
   - TODO: Add `ExportWithPbiTools` switch parameter
+
+## Usage Metrics _(It doesn't require Admin permission. You need to be the content owner.)_
+- [Get-UsageMetricsDataset.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Get-UsageMetricsDataset.ps1)
+  - Return the ID of the hidden Usage Metric Semantic Model in the specified workspace; if that semantic model doesn't exist, it will create it.
+  - TODO: Add DAX queries to download data from this dataset for further analysis.
+
+## Scorecards
+- [Get-GoalToScoreCard.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Get-GoalToScoreCard.ps1)
+  - Duplicate a goal between scorecards in different workspaces. It can create as many duplicates as needed.
