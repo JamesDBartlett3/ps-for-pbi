@@ -11,7 +11,7 @@
 
 # Authors
 - James D. Bartlett III [[Blog (DataVolume.xyz)](https://datavolume.xyz), [GitHub](https://github.com/JamesDBartlett3), [LinkedIn](https://www.linkedin.com/in/jamesdbartlett3/), [Mastodon](https://techhub.social/@JamesDBartlett3), [Bluesky](https://bsky.app/profile/jamesdbartlett3.bsky.social)]
-- Štěpán Rešl [[Blog (DataMeerkat.com)](https://datameerkat.com), [GitHub](https://github.com/tirnovar), [LinkedIn](https://www.linkedin.com/in/stepan-resl/), [Mastodon](https://techhub.social/@StepanResl), [Bluesky](https://bsky.app/profile/stepanresl.bsky.social)], [X / Twitter](https://twitter.com/tpnRel1)
+- Štěpán Rešl [[Blog (DataMeerkat.com)](https://datameerkat.com), [GitHub](https://github.com/tirnovar), [LinkedIn](https://www.linkedin.com/in/stepan-resl/), [Mastodon](https://techhub.social/@StepanResl), [Bluesky](https://bsky.app/profile/stepanresl.bsky.social), [X / Twitter](https://twitter.com/tpnRel1)]
 
 # Introduction
 This repository contains PowerShell scripts that can be used to streamline and automate tasks in Power BI.
@@ -82,5 +82,5 @@ This repository contains PowerShell scripts that can be used to streamline and a
   - TODO: Add DAX queries to download data from this dataset for further analysis.
 
 ## Scorecards
-- [Get-GoalToScoreCard.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Get-GoalToScoreCard.ps1)
+- [Copy-GoalToScoreCard.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Copy-GoalToScoreCard.ps1)
   - Duplicate a goal between scorecards in different workspaces. It can create as many duplicates as needed.
