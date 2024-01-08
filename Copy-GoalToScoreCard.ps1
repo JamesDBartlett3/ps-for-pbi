@@ -140,9 +140,9 @@ function DuplicateGoal($idScorecard, $sourceScorecard, $duplicates, $sourceGoal,
 
 function ShowPrompt() {
   while ($true) {
-    Write-Host -ForegroundColor Yellow 'Scorecard cloning utility'
+    Write-Host -ForegroundColor Yellow 'Goal cloning utility'
     Write-Host 'Choose action:'
-    Write-Host ' [c] - Copy goals to an target scorecard'
+    Write-Host ' [d] - Duplicate goal in scorecard'
     Write-Host ' [q] - Quit'
 
     $action = Read-Host -Prompt 'Choose action or press enter to duplicate a scorecard'
@@ -150,7 +150,7 @@ function ShowPrompt() {
     break
   }
 
-  if ($action -and ($action -ne 'c')) {
+  if ($action -and ($action -ne 'd')) {
     if ($action -ne 'q') {
       Write-Host -ForegroundColor red 'Invalid action'
       return $false
@@ -165,16 +165,7 @@ function ShowPrompt() {
   $sourceScorecard = GetScorecard -scorecardId $scorecardId
   Write-Host -ForegroundColor Green "Scorecard: $($sourceScorecard.name). Workspace: $($sourceScorecard.groupId)"
 
-  $targetScorecardId = Read-Host -Prompt 'Enter target scorecard id'
-  if (!$targetScorecardId) {
-    Write-Error 'Invalid target scorecard id'
-  } if ($targetScorecardId -ne $sourceScorecard) {
-    Write-Host -ForegroundColor red 'Target scorecard id must differend the same as source scorecard id'
-  }
-
-  $targetScorecard = GetScorecard -scorecardId $scorecardId
-  Write-Host -ForegroundColor Green "Scorecard: $($targetScorecard.name). Workspace: $($targetScorecard.groupId)"
-  $destinationWorkspaceId = $targetScorecard.groupId
+  $destinationWorkspaceId = $sourceScorecard.groupId
 
   $goalId = Read-Host -Prompt 'Enter source goal id'
   if (!$scorecardId) {
@@ -188,7 +179,7 @@ function ShowPrompt() {
   if (!$numberOfDuplicates) {
     Write-Error 'Invalid number of duplicates'
   }
-  if ($action -eq 'c') {
+  if ($action -eq 'd') {
     DuplicateGoal -idScorecard $scorecardId -sourceScorecard $sourceScorecard -duplicates $numberOfDuplicates -sourceGoal $sourceGoal -destinationWSId $destinationWorkspaceId
   }
 }
