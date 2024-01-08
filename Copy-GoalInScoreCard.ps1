@@ -6,7 +6,7 @@
     ----
   
   .EXAMPLE
-    .\Copy-GoalToScoreCard.ps1
+    .\Copy-GoalInScoreCard.ps1
   
   .NOTES
     ----
