@@ -82,5 +82,5 @@ This repository contains PowerShell scripts that can be used to streamline and a
   - TODO: Add DAX queries to download data from this dataset for further analysis.
 
 ## Scorecards
-- [Copy-GoalInScoreCard.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Copy-GoalToScoreCard.ps1)
+- [Copy-GoalInScoreCard.ps1](https://github.com/JamesDBartlett3/ps-for-pbi/blob/main/Copy-GoalInScoreCard.ps1)
   - Duplicate a goal in scorecards. It can create as many duplicates of same goal as needed.
