@@ -43,9 +43,26 @@ if (!(Get-Module -ListAvailable -Name MicrosoftPowerBIMgmt)) {
   }
 }
 
-Login-PowerBI
+$headers = [System.Collections.Generic.Dictionary[[String],[String]]]::New()
 
-$token = (Get-PowerBIAccessToken)['Authorization']
+try {
+  $headers = Get-PowerBIAccessToken
+}
+catch {
+  Write-Host '🔒 Power BI Access Token required. Launching Azure Active Directory authentication dialog...'
+  Start-Sleep -s 1
+  Connect-PowerBI -WarningAction SilentlyContinue | Out-Null
+  $headers = Get-PowerBIAccessToken
+}
+if ($headers) {
+	Write-Host '🔑 Power BI Access Token acquired. Proceeding...'
+}
+else {
+	Write-Host '❌ Power BI Access Token not acquired. Exiting...'
+	exit
+}
+
+$token = $headers['Authorization']
 
 function GetApiUrl() {
   $response = Invoke-WebRequest -Uri "$publicEndpoint/metadata/cluster" -Headers @{ 'Authorization' = $token }

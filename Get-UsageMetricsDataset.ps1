@@ -39,18 +39,18 @@ $headers = [System.Collections.Generic.Dictionary[[String],[String]]]::New()
 try {
   $headers = Get-PowerBIAccessToken
 }
-
 catch {
   Write-Host '🔒 Power BI Access Token required. Launching Azure Active Directory authentication dialog...'
   Start-Sleep -s 1
-  Connect-PowerBIServiceAccount -WarningAction SilentlyContinue | Out-Null
+  Connect-PowerBI -WarningAction SilentlyContinue | Out-Null
   $headers = Get-PowerBIAccessToken
-  if ($headers) {
-    Write-Host '🔑 Power BI Access Token acquired. Proceeding...'
-  } else {
-    Write-Host '❌ Power BI Access Token not acquired. Exiting...'
-    Exit
-  }
+}
+if ($headers) {
+	Write-Host '🔑 Power BI Access Token acquired. Proceeding...'
+}
+else {
+	Write-Host '❌ Power BI Access Token not acquired. Exiting...'
+	exit
 }
 
 $token = $headers['Authorization']
