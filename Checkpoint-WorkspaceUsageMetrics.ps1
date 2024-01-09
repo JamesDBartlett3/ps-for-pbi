@@ -13,7 +13,7 @@
   ----
   
   .LINK
-  [Source code](https://github.com/JamesDBartlett3/ps-for-pbi)
+  [Source code](https://github.com/JamesDBartlett3/ps-for-pbi/blob/master/Checkpoint-WorkspaceUsageMetrics.ps1)
   
   .LINK
   [The author's blog](https://datameerkat.com/)
