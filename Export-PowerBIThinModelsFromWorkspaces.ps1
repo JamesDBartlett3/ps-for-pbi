@@ -101,7 +101,8 @@ Param(
 )
 
 begin {
-  [string]$outputDirectory = $OutputFolder ?? (Join-Path -Path $env:TEMP -ChildPath 'PowerBIThinModels')
+  [string]$tempFolder = Join-Path -Path $env:TEMP -ChildPath 'PowerBIThinModels'
+  [string]$outputDirectory = if(!($OutputFolder)) {$tempFolder} else {$OutputFolder}
   [string]$blankPbixUri = 'https://github.com/JamesDBartlett3/PowerBits/raw/main/Misc/blank.pbix'
   [string]$blankPbixTempFile = Join-Path -Path $env:TEMP -ChildPath 'blank.pbix'
   [string]$pbiApiBaseUri = 'https://api.powerbi.com/v1.0/myorg'
@@ -114,6 +115,11 @@ begin {
   [bool]$localFileIsValid = $false
   [int]$thinModelCount = 0
   [int]$errorCount = 0
+
+  if(!(Test-Path -LiteralPath $outputDirectory)) {
+    New-Item -Path $outputDirectory -ItemType Directory | Out-Null
+  }
+
   Invoke-Item -Path $outputDirectory
   Function FileIsBlankPbix($file) {
     $zip = [System.IO.Compression.ZipFile]::OpenRead($file)
@@ -241,8 +247,10 @@ process {
   }
   
   # If user did not specify an output file name, use the Model's name and save it in the output folder
-  $OutputFile = if (!!$OutputFile) { $OutputFile } else {
-    Join-Path -Path $outputDirectory -ChildPath (Join-Path -Path $WorkspaceName -ChildPath "$($ModelName).pbix")
+  $OutputFile = if (!$OutputFile) {
+    Join-Path -Path $outputDirectory -ChildPath (Join-Path -Path $WorkspaceName -ChildPath "$($ModelName).pbix") 
+  } else {
+    $OutputFile
   }
   
   # Export the re-bound Report and Model (a.k.a. "Thick Report") PBIX file to a temp file first, then 
