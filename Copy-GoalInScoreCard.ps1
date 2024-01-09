@@ -12,7 +12,7 @@
     ----
   
   .LINK
-    [Source code](https://github.com/JamesDBartlett3/ps-for-pbi)
+    [Source code](https://github.com/JamesDBartlett3/ps-for-pbi/blob/master/Copy-GoalInScoreCard.ps1)
   
   .LINK
     [The author's blog](https://datameerkat.com/)
