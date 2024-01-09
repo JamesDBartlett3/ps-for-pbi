@@ -6,7 +6,7 @@
   ----
   
   .EXAMPLE
-  # Get the usage metrics for a workspace
+  # Exports usage metrics for a workspace in Power BI
   .\Checkpoint-WorkspaceUsageMetrics.ps1 -WorkspaceID 12345678-1234-1234-1234-123456789012
   
   .NOTES
@@ -30,6 +30,7 @@
 
 Param(
   [Parameter(Mandatory = $false)][guid]$WorkspaceID,
+  [Parameter(Mandatory = $false)][string]$UsageMetric = 'Report views',
   [Parameter(Mandatory = $false)][string]$OutFile
 )
 
@@ -76,7 +77,7 @@ function Get-WorkspaceUsageMetrics($wid) {
   $psRequestBody = @{
     queries            = @(
       @{
-        query = "EVALUATE 'Report views'"
+        query = "EVALUATE '" + $UsageMetric + "'"
       }
     )
     serializerSettings = @{
@@ -95,18 +96,26 @@ function Get-WorkspaceUsageMetrics($wid) {
 }
 
 $result = Get-WorkspaceUsageMetrics -wid $WorkspaceID
+if (!$result) {
+  Write-Host "No usage metrics found for workspace $WorkspaceID"
+  Exit
+}
+
 $columnNames = $result[0].PSObject.Properties.Name
-$newColumnNames = $columnNames.ForEach({$_.Replace('Report views', '').Replace("[","").Replace("]","")})
+$newColumnNames = $columnNames.ForEach({ $_.Replace($UsageMetric, '').Replace("[", "").Replace("]", "") })
 
 for ($i = 0; $i -lt $columnNames.length; $i++) {
   $result | Add-Member -MemberType AliasProperty -Name $newColumnNames[$i] -Value $columnNames[$i]
 }
 
 $resultPath = if ( !$OutFile -or $OutFile -notlike "*.csv" ) {
-    Join-Path -Path $env:TEMP -ChildPath 'ReportViews.csv'
-  } else {
-    $OutFile
-  }
+  $workspaceName = (Get-PowerBIWorkspace -Id $WorkspaceID).Name
+  Join-Path -Path $env:TEMP `
+    -ChildPath "$($workspaceName)_$($UsageMetric.Replace(' ',''))_$(Get-Date -Format 'yyyy-MM-dd_HH-mm-ss').csv"
+}
+else {
+  $OutFile
+}
 
 $result | Select-Object -Property $newColumnNames | Export-Csv -Path $resultPath
 Write-Host "Saving file to $resultPath"
