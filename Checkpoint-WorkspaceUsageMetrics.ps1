@@ -109,10 +109,12 @@ for ($i = 0; $i -lt $columnNames.length; $i++) {
   $result | Add-Member -MemberType AliasProperty -Name $newColumnNames[$i] -Value $columnNames[$i]
 }
 
+$timestamp = Get-Date -Format 'yyyy-MM-dd_HH-mm-ss'
+
 $resultPath = if ( !$OutFile -or $OutFile -notlike "*.csv" ) {
   $workspaceName = (Get-PowerBIWorkspace -Id $WorkspaceID).Name
   Join-Path -Path $env:TEMP `
-    -ChildPath "$($workspaceName.Replace(' ',''))_$($UsageMetric.Replace(' ',''))_$(Get-Date -Format 'yyyy-MM-dd_HH-mm-ss').csv"
+    -ChildPath "$($workspaceName.Replace(' ',''))_$($UsageMetric.Replace(' ',''))_$($timestamp).csv"
 }
 else {
   $OutFile
