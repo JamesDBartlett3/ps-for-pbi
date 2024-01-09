@@ -9,7 +9,8 @@
     .\Copy-GoalInScoreCard.ps1
   
   .NOTES
-    TODO: Add parameters to skip the prompt
+		Warning: This script uses an internal API that is not officially supported by Microsoft. It may break at any time. Use at your own risk.
+		TODO: Add parameters to skip the prompt
   
   .LINK
     [Source code](https://github.com/JamesDBartlett3/ps-for-pbi/blob/master/Copy-GoalInScoreCard.ps1)
