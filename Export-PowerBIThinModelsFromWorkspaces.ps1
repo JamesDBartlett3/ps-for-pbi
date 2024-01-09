@@ -103,7 +103,7 @@ Param(
 begin {
   [string]$tempFolder = Join-Path -Path $env:TEMP -ChildPath 'PowerBIThinModels'
   [string]$outputDirectory = if(!($OutputFolder)) {$tempFolder} else {$OutputFolder}
-  [string]$blankPbixUri = 'https://github.com/JamesDBartlett3/PowerBits/raw/main/Misc/blank.pbix'
+  [string]$blankPbixUri = 'https://github.com/JamesDBartlett3/ps-for-pbi/raw/main/.bin/blank.pbix'
   [string]$blankPbixTempFile = Join-Path -Path $env:TEMP -ChildPath 'blank.pbix'
   [string]$pbiApiBaseUri = 'https://api.powerbi.com/v1.0/myorg'
   [string]$urlRegex = '(http[s]?|[s]?ftp[s]?)(:\/\/)([^\s,]+)'

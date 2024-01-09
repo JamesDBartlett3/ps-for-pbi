@@ -124,7 +124,7 @@ if (!$TargetReportId) {
   # download one from GitHub and check if it's valid and blank
   else {
     Write-Debug "Downloading a blank pbix file from GitHub to $blankPbixTempFile..."
-    $BlankPbixUri = 'https://github.com/JamesDBartlett3/PowerBits/raw/main/Misc/blank.pbix'
+    $BlankPbixUri = 'https://github.com/JamesDBartlett3/ps-for-pbi/raw/main/.bin/blank.pbix'
     Invoke-WebRequest -Uri $BlankPbixUri -OutFile $blankPbixTempFile
     $defaultFileIsValid = FileIsBlankPbix($blankPbixTempFile)
   }
