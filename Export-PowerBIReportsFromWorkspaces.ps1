@@ -7,7 +7,7 @@
     Optional features:
     - Extract the source code of exported PBIX files using pbi-tools.
     - Skip existing files to avoid overwriting them.
-    - Export multiple reports in parallel to speed up the export process.
+    - Export one report at a time or in parallel (default behavior: count processor cores and run that many parallel processes).
   
   .PARAMETER OutputFolder
     The folder where the reports will be saved. If the folder does not exist, it will be created.
@@ -19,16 +19,16 @@
     If specified, existing files will be skipped. If not specified, existing files will be overwritten.
   
   .PARAMETER ThrottleLimit
-    The maximum number of reports that will be exported in parallel. Defaults to 1.
+    The maximum number of reports that will be exported in parallel. Defaults to the number of processor cores detected.
   
   .EXAMPLE
-    # Export reports, one at a time, to the default folder in the temp directory, overwriting any existing files there
+    # Export reports to the default folder in the temp directory, overwriting any existing files there
     .\Export-PowerBIReportsFromWorkspaces.ps1
   
   .EXAMPLE
-    # Export reports, up to four at a time, to the "C:\Reports" folder, skip any files that already exist there, 
+    # Export reports, up to two at a time, to the "C:\Reports" folder, skip any files that already exist there, 
     # and use pbi-tools to extract the source code of the PBIX files into subfolders named after the reports they came from
-    .\Export-PowerBIReportsFromWorkspaces.ps1 -OutputFolder C:\Reports -ExtractWithPbiTools -SkipExistingFiles -ThrottleLimit 4
+    .\Export-PowerBIReportsFromWorkspaces.ps1 -OutputFolder C:\Reports -ExtractWithPbiTools -SkipExistingFiles -ThrottleLimit 2
   
   .NOTES
     This script does NOT require Azure AD app registration, service principal creation, or any other special setup.
@@ -64,7 +64,7 @@ Param(
   [parameter(Mandatory = $false)][string]$OutputFolder,
   [parameter(Mandatory = $false)][switch]$ExtractWithPbiTools,
   [parameter(Mandatory = $false)][switch]$SkipExistingFiles,
-  [parameter(Mandatory = $false)][int]$ThrottleLimit = 1
+  [parameter(Mandatory = $false)][int]$ThrottleLimit = [Environment]::ProcessorCount
 )
 
 begin {
