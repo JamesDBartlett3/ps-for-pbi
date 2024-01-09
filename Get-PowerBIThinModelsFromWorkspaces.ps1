@@ -6,7 +6,7 @@
     Get all "Thin" Models (Power BI Semantic Models without a corresponding report) from selected Power BI Workspaces in parallel, and output them to the pipeline.
   
   .PARAMETER ThrottleLimit
-    The maximum number of parallel processes to run. Defaults to 1.
+    The maximum number of parallel processes to run. Defaults to the number of logical processors in the system.
   
   .PARAMETER Interactive
     If specified, displays a grid view of Workspaces and allows the user to select which ones to scan for Thin Models.
@@ -16,7 +16,7 @@
   
   .OUTPUTS
     One or more objects with the following properties:
-      - DatasetName
+      - ModelName
       - DatasetId
       - WebUrl
       - IsRefreshable
@@ -166,9 +166,9 @@ process {
     
     # For each Dataset, check for any corresponding reports with the same name
     $workspaceModels | ForEach-Object {
-      $datasetProperties = '' | Select-Object DatasetName, DatasetId, WebUrl, IsRefreshable, WorkspaceName, WorkspaceId
-      $datasetName, $datasetId, $datasetWebUrl, $datasetIsRefreshable, $datasetWorkspaceName, $datasetWorkspaceId = $null
-      $datasetName = $_.Name
+      $datasetProperties = '' | Select-Object ModelName, DatasetId, WebUrl, IsRefreshable, WorkspaceName, WorkspaceId
+      $modelName, $datasetId, $datasetWebUrl, $datasetIsRefreshable, $datasetWorkspaceName, $datasetWorkspaceId = $null
+      $modelName = $_.Name
       $datasetId = $_.Id
       $datasetWebUrl = $_.WebUrl
       $datasetIsRefreshable = $_.IsRefreshable
@@ -176,8 +176,8 @@ process {
       $datasetWorkspaceId = $_.WorkspaceId
       
       # If no corresponding report is found, output the Dataset's properties for processing downstream
-      if (!($workspaceReports | Where-Object { $_.Name -eq $datasetName -and $_.WorkspaceId -eq $datasetWorkspaceId })) {
-        $datasetProperties.DatasetName = $datasetName
+      if (!($workspaceReports | Where-Object { $_.Name -eq $modelName -and $_.WorkspaceId -eq $datasetWorkspaceId })) {
+        $datasetProperties.ModelName = $modelName
         $datasetProperties.DatasetId = $datasetId
         $datasetProperties.WebUrl = $datasetWebUrl
         $datasetProperties.IsRefreshable = $datasetIsRefreshable
