@@ -115,11 +115,11 @@ begin {
   [bool]$localFileIsValid = $false
   [int]$thinModelCount = 0
   [int]$errorCount = 0
-
+	
   if(!(Test-Path -LiteralPath $outputDirectory)) {
     New-Item -Path $outputDirectory -ItemType Directory | Out-Null
   }
-
+	
   Invoke-Item -Path $outputDirectory
   Function FileIsBlankPbix($file) {
     $zip = [System.IO.Compression.ZipFile]::OpenRead($file)
@@ -174,7 +174,7 @@ process {
   # download one from GitHub, and then check if it's valid and blank
   else {
     Write-Verbose "Downloading a blank pbix file from GitHub to $blankPbixTempFile..."
-    Invoke-WebRequest -Uri $blankPbixUri -OutputFile $blankPbixTempFile
+    Invoke-WebRequest -Uri $blankPbixUri -OutFile $blankPbixTempFile
     $defaultFileIsValid = FileIsBlankPbix($blankPbixTempFile)
   }
   
@@ -263,7 +263,7 @@ process {
     -Body '{"preferClientRouting":true}' `
     -ErrorVariable message `
     -ErrorAction SilentlyContinue `
-    -OutputFile $tempFileName 2>&1 | Out-Null
+    -OutFile $tempFileName 2>&1 | Out-Null
   if ($message) {
     $errorCount++
     $errorCode = ($message.ErrorRecord.ErrorDetails.Message | ConvertFrom-Json).error.code
