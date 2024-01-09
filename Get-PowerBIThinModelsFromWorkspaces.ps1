@@ -122,7 +122,7 @@ process {
   Write-Debug "User Identifier: `n $pbiUserIdentifier"
   
   # Get list of Workspaces
-  $workspaces = Get-PowerBIWorkspace -Scope Organization -All -ErrorAction SilentlyContinue | 
+  $workspaces = Get-PowerBIWorkspace -Scope Organization -All | 
   Where-Object {
     $_.Type -eq 'Workspace' -and
     $_.State -eq 'Active' -and
@@ -143,7 +143,7 @@ process {
     $workspaceId = $_.Id
     
     # Get Datasets from the Workspace
-    $workspaceModels = Get-PowerBIDataset -Scope Organization -WorkspaceId $workspaceId -ErrorAction SilentlyContinue |
+    $workspaceModels = Get-PowerBIDataset -Scope Organization -WorkspaceId $workspaceId |
     Where-Object {
       $_.IsRefreshable -eq $true -and
       $_.Name -notIn $ignoreReports
@@ -154,7 +154,7 @@ process {
     } | Sort-Object -Property Name
     
     # Get reports from the Workspace
-    $workspaceReports = Get-PowerBIReport -Scope Organization -WorkspaceId $workspaceId -ErrorAction SilentlyContinue |
+    $workspaceReports = Get-PowerBIReport -Scope Organization -WorkspaceId $workspaceId |
     Where-Object {
       $_.Name -notIn $ignoreReports -and
       $_.WebUrl -notlike '*/rdlreports/*'
