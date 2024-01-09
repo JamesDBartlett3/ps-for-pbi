@@ -5,8 +5,7 @@
 # or is otherwise not available for download
 .\Copy-PowerBIReportContentToBlankPBIXFile.ps1 -OutFile C:\Temp\MyReport.pbix `
 	-SourceReportId 34808129-dd9f-4129-bb6a-9a768e5a628b `
-	-SourceWorkspaceId d0064e4a-6365-44db-8236-ba2c7d5c198b
-Invoke-Item -Path C:\Temp
+	-SourceWorkspaceId d0064e4a-6365-44db-8236-ba2c7d5c198b; Invoke-Item -Path C:\Temp
 
 # Export Power BI Reports from Workspaces, and extract their source code with PBI-Tools
 .\Export-PowerBIReportsFromWorkspaces.ps1 -ExtractWithPbiTools
