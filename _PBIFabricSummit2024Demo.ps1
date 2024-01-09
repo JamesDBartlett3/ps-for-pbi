@@ -4,6 +4,10 @@
 # Checkpoint-PowerBIWorkspaceSecurity.ps1
 .\Checkpoint-PowerBIWorkspaceSecurity.ps1
 
+# Checkpoint-WorkspaceUsageMetrics.ps1
+.\Checkpoint-WorkspaceUsageMetrics.ps1 `
+	-WorkspaceID d0064e4a-6365-44db-8236-ba2c7d5c198b
+
 # Copy-GoalInScorecard.ps1
 .\Copy-GoalInScoreCard.ps1
 

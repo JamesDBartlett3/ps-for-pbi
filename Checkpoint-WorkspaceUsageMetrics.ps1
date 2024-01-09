@@ -7,7 +7,7 @@
   
   .EXAMPLE
   # Get the usage metrics for a workspace
-  .\Get-UsageMetricsDataset.ps1 -WorkspaceID 12345678-1234-1234-1234-123456789012
+  .\Checkpoint-WorkspaceUsageMetrics.ps1 -WorkspaceID 12345678-1234-1234-1234-123456789012
   
   .NOTES
   ----
