@@ -4,8 +4,8 @@
 # This is useful for downloading a report that was authored in a personal workspace,
 # or is otherwise not available for download
 .\Copy-PowerBIReportContentToBlankPBIXFile.ps1 `
-	-SourceReportId `
-	-SourceWorkspaceId
+	-SourceReportId 34808129-dd9f-4129-bb6a-9a768e5a628b `
+	-SourceWorkspaceId d0064e4a-6365-44db-8236-ba2c7d5c198b
 
 # Export Power BI Reports from Workspaces, and extract their source code with PBI-Tools
 .\Export-PowerBIReportsFromWorkspaces.ps1 -ExtractWithPbiTools
