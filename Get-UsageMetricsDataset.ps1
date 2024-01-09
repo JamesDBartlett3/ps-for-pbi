@@ -1,38 +1,40 @@
 <#
   .SYNOPSIS
-    ----
+  ----
   
   .DESCRIPTION
-    ----
+  ----
   
   .EXAMPLE
-    .\Get-UsageMetricsDataset.ps1
+  # Get the usage metrics for a workspace
+  .\Get-UsageMetricsDataset.ps1 -WorkspaceID 12345678-1234-1234-1234-123456789012
   
   .NOTES
-    ----
+  ----
   
   .LINK
-    [Source code](https://github.com/JamesDBartlett3/ps-for-pbi)
+  [Source code](https://github.com/JamesDBartlett3/ps-for-pbi)
   
   .LINK
-    [The author's blog](https://datameerkat.com/)
-    
-  .LINK
-    [Follow the author on LinkedIn](https://www.linkedin.com/in/stepan-resl/)
+  [The author's blog](https://datameerkat.com/)
   
   .LINK
-    [Follow the author on Mastodon](https://techhub.social/deck/@StepanResl)
+  [Follow the author on LinkedIn](https://www.linkedin.com/in/stepan-resl/)
   
   .LINK
-    [Follow the author on BlueSky](https://bsky.app/profile/stepanresl.bsky.social)
+  [Follow the author on Mastodon](https://techhub.social/deck/@StepanResl)
+  
+  .LINK
+  [Follow the author on BlueSky](https://bsky.app/profile/stepanresl.bsky.social)
 #>
 
 Param(
-  [Parameter(Mandatory = $false)][guid]$WorkspaceID
+  [Parameter(Mandatory = $false)][guid]$WorkspaceID,
+  [Parameter(Mandatory = $false)][string]$OutFile
 )
 
 # PowerShell dependencies
-#Requires -Modules MicrosoftPowerBIMgmt, ImportExcel
+#Requires -Modules MicrosoftPowerBIMgmt
 
 $headers = [System.Collections.Generic.Dictionary[[String], [String]]]::New()
 
@@ -71,36 +73,41 @@ function Get-PowerBiApiClusterUri() {
 }
 
 function Get-WorkspaceUsageMetrics($wid) {
-
-  $requestBody = @"
-  {
-      "queries":
-          [
-              {"query": "EVALUATE 'Report views'"
-  
-              }
-          ],
-          "serializerSettings": {"includeNulls": false}
+  $psRequestBody = @{
+    queries            = @(
+      @{
+        query = "EVALUATE 'Report views'"
+      }
+    )
+    serializerSettings = @{
+      includeNulls = $false
+    }
   }
-"@
-
   $url = Get-PowerBiApiClusterUri
   $data = Invoke-WebRequest -Uri "$url/$wid/usageMetricsReportV2?experience=power-bi" -Headers @{ 'Authorization' = $token }
   $response = $data.Content.ToString().Replace('nextRefreshTime', 'NextRefreshTime').Replace('lastRefreshTime', 'LastRefreshTime') | ConvertFrom-Json
   $dmname = $response.models[0].dbName
   $publicEndpoint = "https://api.powerbi.com/v1.0/myorg/groups/$wid/datasets/$dmname/executeQueries"
-  $result = Invoke-PowerBIRestMethod -Method POST -Url $publicEndpoint -Body $requestBody
+  $result = Invoke-PowerBIRestMethod -Method POST -Url $publicEndpoint -Body ($psRequestBody | ConvertTo-Json)
   $jsonResult = $result | ConvertFrom-Json
   $reportViewed = $jsonResult.results[0].tables[0].rows
-  
   return $reportViewed
 }
 
 $result = Get-WorkspaceUsageMetrics -wid $WorkspaceID
+$columnNames = $result[0].PSObject.Properties.Name
+$newColumnNames = $columnNames.ForEach({$_.Replace('Report views', '').Replace("[","").Replace("]","")})
 
-$params = @{
-  Path = Join-Path -Path $env:TEMP -ChildPath 'ReportViews.csv'
+for ($i = 0; $i -lt $columnNames.length; $i++) {
+  $result | Add-Member -MemberType AliasProperty -Name $newColumnNames[$i] -Value $columnNames[$i]
 }
 
-$result | Export-Csv @params
-Invoke-Item $params.Path
+$resultPath = if ( !$OutFile -or $OutFile -notlike "*.csv" ) {
+    Join-Path -Path $env:TEMP -ChildPath 'ReportViews.csv'
+  } else {
+    $OutFile
+  }
+
+$result | Select-Object -Property $newColumnNames | Export-Csv -Path $resultPath
+Write-Host "Saving file to $resultPath"
+Invoke-Item $resultPath
