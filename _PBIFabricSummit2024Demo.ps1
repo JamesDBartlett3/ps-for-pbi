@@ -3,9 +3,10 @@
 # Copy the content of a Power BI Report to a blank PBIX file, then download that file
 # This is useful for downloading a report that was authored in a personal workspace,
 # or is otherwise not available for download
-.\Copy-PowerBIReportContentToBlankPBIXFile.ps1 `
+.\Copy-PowerBIReportContentToBlankPBIXFile.ps1 -OutFile C:\Temp\MyReport.pbix `
 	-SourceReportId 34808129-dd9f-4129-bb6a-9a768e5a628b `
 	-SourceWorkspaceId d0064e4a-6365-44db-8236-ba2c7d5c198b
+Invoke-Item -Path C:\Temp
 
 # Export Power BI Reports from Workspaces, and extract their source code with PBI-Tools
 .\Export-PowerBIReportsFromWorkspaces.ps1 -ExtractWithPbiTools
@@ -21,7 +22,7 @@
 
 # Export usage metrics for a Power BI Workspace to a CSV file, then open it
 .\Checkpoint-WorkspaceUsageMetrics.ps1 -OpenFile `
-	-WorkspaceID 12398b8b-568b-4191-8af3-968475609e40
+	-WorkspaceID d0064e4a-6365-44db-8236-ba2c7d5c198b
 
 # Create one or more copies of a Goal on a Power BI Scorecard
 # This is useful for quickly creating multiple Goals that are similar to an existing one
@@ -43,11 +44,11 @@
 
 ##### ADMIN #####
 
-# Get the status of all Data Gateway nodes to which the current user has access
-.\Get-DataGatewayStatus.ps1
-
 # Export Power BI Scanner API data to a JSON file, then open it
 .\Checkpoint-PowerBIScannerApiData.ps1 -OpenFile
 
 # Export security settings for all Power BI Workspaces to an Excel file, then open it
 .\Checkpoint-PowerBIWorkspaceSecurity.ps1 -OpenFile
+
+# Get the status of all Data Gateway nodes to which the current user has access
+.\Get-DataGatewayStatus.ps1
