@@ -73,7 +73,7 @@ function Get-PowerBiApiClusterUri() {
   return $clusterURI
 }
 
-function Get-WorkspaceUsageMetrics($wid) {
+function Get-WorkspaceUsageMetrics($wid, $UsageMetric) {
   $psRequestBody = @{
     queries            = @(
       @{
@@ -91,11 +91,12 @@ function Get-WorkspaceUsageMetrics($wid) {
   $publicEndpoint = "https://api.powerbi.com/v1.0/myorg/groups/$wid/datasets/$dmname/executeQueries"
   $result = Invoke-PowerBIRestMethod -Method POST -Url $publicEndpoint -Body ($psRequestBody | ConvertTo-Json)
   $jsonResult = $result | ConvertFrom-Json
-  $reportViewed = $jsonResult.results[0].tables[0].rows
-  return $reportViewed
+  $rows = $jsonResult.results[0].tables[0].rows
+  return $rows
 }
 
-$result = Get-WorkspaceUsageMetrics -wid $WorkspaceID
+$result = Get-WorkspaceUsageMetrics -wid $WorkspaceID -UsageMetric $UsageMetric
+
 if (!$result) {
   Write-Host "No usage metrics found for workspace $WorkspaceID"
   Exit
@@ -111,7 +112,7 @@ for ($i = 0; $i -lt $columnNames.length; $i++) {
 $resultPath = if ( !$OutFile -or $OutFile -notlike "*.csv" ) {
   $workspaceName = (Get-PowerBIWorkspace -Id $WorkspaceID).Name
   Join-Path -Path $env:TEMP `
-    -ChildPath "$($workspaceName)_$($UsageMetric.Replace(' ',''))_$(Get-Date -Format 'yyyy-MM-dd_HH-mm-ss').csv"
+    -ChildPath "$($workspaceName.Replace(' ',''))_$($UsageMetric.Replace(' ',''))_$(Get-Date -Format 'yyyy-MM-dd_HH-mm-ss').csv"
 }
 else {
   $OutFile
