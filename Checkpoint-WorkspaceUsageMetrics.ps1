@@ -1,31 +1,40 @@
 <#
   .SYNOPSIS
-  ----
+    Exports usage metrics for a workspace in Power BI
   
   .DESCRIPTION
-  ----
+    Exports usage metrics for a workspace in Power BI to a CSV file, with the option to specify which usage metric.
   
+  .PARAMETER WorkspaceID
+    The ID of the workspace to export usage metrics for.
+  
+  .PARAMETER UsageMetric
+    The usage metric to export. Defaults to 'Report views'.
+
+  .PARAMETER OutFile
+    The path to the CSV file to export the usage metrics to. Defaults to a file in the user's temp directory.
+
   .EXAMPLE
-  # Exports usage metrics for a workspace in Power BI
-  .\Checkpoint-WorkspaceUsageMetrics.ps1 -WorkspaceID 12345678-1234-1234-1234-123456789012
+    # Exports usage metrics for a workspace in Power BI
+    .\Checkpoint-WorkspaceUsageMetrics.ps1 -WorkspaceID 12345678-1234-1234-1234-123456789012
   
   .NOTES
-  ----
+    TODO: Add support for Excel
   
   .LINK
-  [Source code](https://github.com/JamesDBartlett3/ps-for-pbi/blob/master/Checkpoint-WorkspaceUsageMetrics.ps1)
+    [Source code](https://github.com/JamesDBartlett3/ps-for-pbi/blob/master/Checkpoint-WorkspaceUsageMetrics.ps1)
   
   .LINK
-  [The author's blog](https://datameerkat.com/)
+    [The author's blog](https://datameerkat.com/)
   
   .LINK
-  [Follow the author on LinkedIn](https://www.linkedin.com/in/stepan-resl/)
+    [Follow the author on LinkedIn](https://www.linkedin.com/in/stepan-resl/)
   
   .LINK
-  [Follow the author on Mastodon](https://techhub.social/deck/@StepanResl)
+    [Follow the author on Mastodon](https://techhub.social/deck/@StepanResl)
   
   .LINK
-  [Follow the author on BlueSky](https://bsky.app/profile/stepanresl.bsky.social)
+    [Follow the author on BlueSky](https://bsky.app/profile/stepanresl.bsky.social)
 #>
 
 Param(
