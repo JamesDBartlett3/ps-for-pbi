@@ -61,13 +61,21 @@ Param(
   [Parameter(Mandatory = $false)]
   [string]$OutFile = "$HOME\Downloads\PowerBIScannerApiData_$(Get-Date -UFormat '%Y-%m-%d_%H%M').json",
   [Parameter(Mandatory = $false)]
-  [switch]$OpenFile
+  [switch]$OpenFile,
+  [Parameter(Mandatory = $false)]
+  [int]$BatchSize = 100
 )
 
-$currentDate = Get-Date -UFormat '%Y-%m-%d_%H%M'
-$OutFile = $OutFile -replace 'PowerBIScannerApiData.json', "PowerBIScannerApiData_$currentDate.json"
-$baseUrl = 'https://api.powerbi.com/v1.0/myorg/admin/workspaces'
+# Declare starting variables
+[string]$baseUrl = 'https://api.powerbi.com/v1.0/myorg/admin/workspaces'
+[string]$modifiedWorkspacesUrl = "$baseUrl/modified?excludePersonalWorkspaces=True"
+[string]$getInfoUrl = "$baseUrl/getInfo?lineage=True&datasourceDetails=True&datasetSchema=True&datasetExpressions=True&getArtifactUsers=True"
 $headers = [System.Collections.Generic.Dictionary[[String], [String]]]::New()
+$scanResults = [PSCustomObject]@{
+  workspaces = @()
+  datasourceInstances = @()
+  misconfiguredDatasourceInstances = @()
+}
 
 try {
   $headers = Get-PowerBIAccessToken
@@ -86,9 +94,7 @@ catch {
   }
 }
 
-$modifiedWorkspacesUrl = "$baseUrl/modified?excludePersonalWorkspaces=True"
-
-# Send a GET request to the API endpoint
+# Send a GET request to the modified workspaces endpoint
 $workspaceList = Invoke-RestMethod -Uri $modifiedWorkspacesUrl -Method Get -Headers $headers
 
 # Create an object to hold the workspace IDs
@@ -101,43 +107,70 @@ foreach ($w in $workspaceList) {
   $workspaceIdsObject.workspaces += $w.id
 }
 
-# Convert the object to JSON
-$jsonBody = $workspaceIdsObject | ConvertTo-Json
+[int]$workspaceCount = $workspaceIdsObject.workspaces.Count
 
-$getInfoUrl = "$baseUrl/getInfo?lineage=True&datasourceDetails=True&datasetSchema=True&datasetExpressions=True&getArtifactUsers=True"
-
-# Send a POST request to the API endpoint
-$startScanResponse = Invoke-RestMethod -Uri $getInfoUrl -Method Post -Headers $headers -Body $jsonBody -ContentType 'application/json'
-
-$scanId = $startScanResponse.id
-
-$scanStatusUrl = "$baseUrl/scanStatus/$scanId"
-
-$scanStatus = ''
-
-# Check the scan status every 5 seconds until it's complete
-while ($scanStatus -ne 'Succeeded') {
-  $checkScanResponse = Invoke-RestMethod -Uri $scanStatusUrl -Method Get -Headers $headers
-  Start-Sleep -s 5
-  $scanStatus = $checkScanResponse.status
-  Write-Host "Scan status: $scanStatus"
+# If no workspaces were found, exit the script
+if ($workspaceCount -eq 0) {
+  Write-Host 'No workspaces found. Exiting...'
+  Exit
 }
 
-Write-Host 'Scan complete. Getting data...'
+# Calculate the number of batches to run based on the number of workspaces and the batch size
+[int]$batchesToRun = [Math]::Ceiling($workspaceCount / $batchSize)
 
-$completedScanId = $checkScanResponse.id
+Write-Host "Found $($workspaceCount) workspaces. Running $batchesToRun batches of $batchSize..."
+Write-Host "----------------------------------"
 
-$scanResultUrl = "$baseUrl/scanResult/$completedScanId"
+# Loop through the workspaces in batches of $batchSize, get the scanner API data for each batch, and add it to the $scanResults object
+for ($i = 0; $i -lt $batchesToRun; $i++) {
+  $batchNum = $i + 1
+  Write-Host "Running batch $batchNum of $batchesToRun..."
+  $batchStart = $i * $batchSize
+  $batchEnd = $batchStart + $batchSize
+  $batch = $workspaceIdsObject.workspaces[$batchStart..$batchEnd]
+  $batchObject = [PSCustomObject]@{
+    workspaces = $batch
+  }
+  $jsonBody = $batchObject | ConvertTo-Json
+  # Send a POST request to the API endpoint
+  $startScanResponse = Invoke-RestMethod -Uri $getInfoUrl -Method Post -Headers $headers -Body $jsonBody -ContentType 'application/json'
+  $scanId = $startScanResponse.id
+  $scanStatusUrl = "$baseUrl/scanStatus/$scanId"
+  $scanStatus = ''
+  # Check the scan status every 5 seconds until it's complete
+  while ($scanStatus -ne 'Succeeded') {
+    if ($scanStatus -eq 'Running') {
+      Start-Sleep -s 5
+    }
+    $checkScanResponse = Invoke-RestMethod -Uri $scanStatusUrl -Method Get -Headers $headers
+    $scanStatus = $checkScanResponse.status
+    Write-Host "Batch $batchNum status: $scanStatus"
+  }
+  Write-Host "Batch $batchNum complete. Getting data..."
+  Write-Host "----------------------------------"
 
-# Send a GET request to the API endpoint
-$getDataResponse = Invoke-RestMethod -Uri $scanResultUrl -Method Get -Headers $headers
+  $completedScanId = $checkScanResponse.id
 
+  $batchResultUrl = "$baseUrl/scanResult/$completedScanId"
+  
+  # Send a GET request to the API endpoint
+  $batchResult = Invoke-RestMethod -Uri $batchResultUrl -Method Get -Headers $headers
+
+  # Add the result to the $scanResults object
+  $scanResults.workspaces += $batchResult.workspaces
+  $scanResults.datasourceInstances += $batchResult.datasourceInstances
+  $scanResults.misconfiguredDatasourceInstances += $batchResult.misconfiguredDatasourceInstances
+
+}
+
+Write-Host "Finished scanning $workspaceCount workspaces ($batchesToRun batches of $BatchSize)." 
 Write-Host "Writing data to file: $OutFile"
 
-# Write the data to a file
-$getDataResponse | ConvertTo-Json -Depth 100 | Out-File -FilePath $OutFile
+# Write the data to $OutFile
+$scanResults | ConvertTo-Json -Depth 100 | Out-File -FilePath $OutFile
 
 # Open the file in the default application if user passed the -OpenFile switch
 if ($OpenFile) {
+  Write-Host 'Opening file...'
   Invoke-Item $OutFile
 }
