@@ -112,9 +112,10 @@ foreach ($w in $workspaceList) {
   $workspaceIdsObject.workspaces += $w.id
 }
 
+# Get the number of workspaces
 [int]$workspaceCount = $workspaceIdsObject.workspaces.Count
 
-[string]$batchSuffx = if($batchSize -eq 1) {''} else {'es'}
+# Declare a variable to hold the workspace suffix (singular or plural)
 [string]$workspaceSuffix = if($workspaceCount -eq 1) {''} else {'s'}
 
 # If no workspaces were found, exit the script
@@ -125,6 +126,9 @@ if ($workspaceCount -eq 0) {
 
 # Calculate the number of batches to run based on the number of workspaces and the batch size
 [int]$batchesToRun = [Math]::Ceiling($workspaceCount / $batchSize)
+
+# Declare a variable to hold the batch suffix (singular or plural)
+[string]$batchSuffx = if($batchesToRun -eq 1) {''} else {'es'}
 
 Write-Host "Found $($workspaceCount) workspace$workspaceSuffix. Running $batchesToRun batch$batchSuffx of $batchSize..."
 Write-Host "----------------------------------"
