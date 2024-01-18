@@ -13,6 +13,9 @@
   
   .PARAMETER OpenFile
     Specify to open the JSON file in the default application after it's created.
+
+  .PARAMETER BatchSize
+    The number of workspaces to scan in each batch. Valid values are 1-100. Defaults to 100.
   
   .INPUTS
     - Parameters are currently the only way to pass input to this script
@@ -62,9 +65,11 @@ Param(
   [string]$OutFile = "$HOME\Downloads\PowerBIScannerApiData_$(Get-Date -UFormat '%Y-%m-%d_%H%M').json",
   [Parameter(Mandatory = $false)]
   [switch]$OpenFile,
-  [Parameter(Mandatory = $false)]
+  [Parameter(Mandatory = $false)][ValidateRange(1, 100)]
   [int]$BatchSize = 100
 )
+
+#Requires -Modules MicrosoftPowerBIMgmt
 
 # Declare starting variables
 [string]$baseUrl = 'https://api.powerbi.com/v1.0/myorg/admin/workspaces'
@@ -109,6 +114,9 @@ foreach ($w in $workspaceList) {
 
 [int]$workspaceCount = $workspaceIdsObject.workspaces.Count
 
+[string]$batchSuffx = if($batchSize -eq 1) {''} else {'es'}
+[string]$workspaceSuffix = if($workspaceCount -eq 1) {''} else {'s'}
+
 # If no workspaces were found, exit the script
 if ($workspaceCount -eq 0) {
   Write-Host 'No workspaces found. Exiting...'
@@ -118,7 +126,7 @@ if ($workspaceCount -eq 0) {
 # Calculate the number of batches to run based on the number of workspaces and the batch size
 [int]$batchesToRun = [Math]::Ceiling($workspaceCount / $batchSize)
 
-Write-Host "Found $($workspaceCount) workspaces. Running $batchesToRun batches of $batchSize..."
+Write-Host "Found $($workspaceCount) workspace$workspaceSuffix. Running $batchesToRun batch$batchSuffx of $batchSize..."
 Write-Host "----------------------------------"
 
 # Loop through the workspaces in batches of $batchSize, get the scanner API data for each batch, and add it to the $scanResults object
@@ -163,7 +171,7 @@ for ($i = 0; $i -lt $batchesToRun; $i++) {
 
 }
 
-Write-Host "Finished scanning $workspaceCount workspaces ($batchesToRun batches of $BatchSize)." 
+Write-Host "Finished scanning $workspaceCount workspace$workspaceSuffix ($batchesToRun batch$batchSuffx of $BatchSize)." 
 Write-Host "Writing data to file: $OutFile"
 
 # Write the data to $OutFile
