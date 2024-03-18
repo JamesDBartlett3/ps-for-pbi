@@ -17,6 +17,9 @@
   .PARAMETER BatchSize
     The number of workspaces to scan in each batch. Valid values are 1-100. Defaults to 100.
   
+  .PARAMETER Organization
+    The name of the organization for the REST API call. Defaults to 'myorg'.
+  
   .INPUTS
     - Parameters are currently the only way to pass input to this script
     - Pipeline inputs are not yet supported
