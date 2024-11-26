@@ -82,7 +82,7 @@ begin {
     Param(
       [string]$WorkspaceName
     )
-    $workspaceId = (Invoke-RestMethod -Method GET -Uri $fabricUri -Headers $headers | Where-Object { $_.displayName -eq $WorkspaceName }).id
+    $workspaceId = ((Invoke-RestMethod -Method GET -Uri $fabricUri -Headers $headers).value | Where-Object { $_.displayName -eq $WorkspaceName }).id
     return $workspaceId
   }
   # If $SourceWorkspace is not a GUID, assume it is a workspace name and retrieve the workspace ID.
