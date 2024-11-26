@@ -5,7 +5,7 @@
   .DESCRIPTION
     This script copies one or more Fabric notebooks from one workspace to another.
     It first authenticates with Power BI using an access token. If the access token is not available, it prompts the user to authenticate with Azure Active Directory.
-    It then retrieves the specified notebook from the source workspace and copies it to the target workspace.
+    It then retrieves the specified notebook from the source workspace and copies it to the destination workspace.
     This can be useful for migrating notebooks between workspaces.
 
   .PARAMETER SourceWorkspace
@@ -14,16 +14,16 @@
   .PARAMETER Notebooks
     The name or ID of the notebook(s) to copy. If not specified, the script will prompt the user to select one or more notebooks from the source workspace.
 
-  .PARAMETER TargetWorkspace
-    The name or ID of the target workspace to copy the notebook(s) to.
+  .PARAMETER DestinationWorkspace
+    The name or ID of the destination workspace to copy the notebook(s) to.
 
   .EXAMPLE
-    # This example copies the notebooks named 'Notebook A' and 'Notebook B' from the workspace named 'Source Workspace' to the workspace named 'Target Workspace'.
-    .\Copy-FabricNotebook.ps1 -SourceWorkspace 'Source Workspace' -TargetWorkspace 'Target Workspace' -Notebooks 'Notebook A', 'Notebook B'
+    # This example copies the notebooks named 'Notebook A' and 'Notebook B' from the workspace named 'Source Workspace' to the workspace named 'Destination Workspace'.
+    .\Copy-FabricNotebook.ps1 -SourceWorkspace 'Source Workspace' -DestinationWorkspace 'Destination Workspace' -Notebooks 'Notebook A', 'Notebook B'
     
   .EXAMPLE
     # This example copies a notebook identified by its ID from a workspace identified by its ID to another workspace identified by its ID.
-    .\Copy-FabricNotebook.ps1 -SourceWorkspace '12345678-1234-1234-1234-1234567890ab' -TargetWorkspace '98765432-4321-4321-4321-0987654321ba' -Notebooks '87654321-4321-4321-4321-1234567890ab'
+    .\Copy-FabricNotebook.ps1 -SourceWorkspace '12345678-1234-1234-1234-1234567890ab' -DestinationWorkspace '98765432-4321-4321-4321-0987654321ba' -Notebooks '87654321-4321-4321-4321-1234567890ab'
   
   .NOTES
     ACKNOWLEDGEMENTS:
@@ -48,7 +48,7 @@
 
 Param(
   [Parameter(Mandatory)][string]$SourceWorkspace,
-  [Parameter(Mandatory)][string]$TargetWorkspace,
+  [Parameter(Mandatory)][string]$DestinationWorkspace,
   [Parameter()][string[]]$Notebooks
 )
 
@@ -74,7 +74,7 @@ begin {
     }
   }
   $sourceWorkspaceId = ''
-  $targetWorkspaceId = ''
+  $destinationWorkspaceId = ''
   $fabricUri = 'https://api.fabric.microsoft.com/v1/workspaces'
   $guidMatch = '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$'
   $selectedNotebooks = @()
@@ -87,8 +87,8 @@ begin {
   }
   # If $SourceWorkspace is not a GUID, assume it is a workspace name and retrieve the workspace ID.
   $sourceWorkspaceId = $SourceWorkspace -match $guidMatch ? $SourceWorkspace : (Get-PbiFabWorkspaceId -WorkspaceName $SourceWorkspace)
-  # If $TargetWorkspace is not a GUID, assume it is a workspace name and retrieve the workspace ID.
-  $targetWorkspaceId = $TargetWorkspace -match $guidMatch ? $TargetWorkspace : (Get-PbiFabWorkspaceId -WorkspaceName $TargetWorkspace)
+  # If $DestinationWorkspace is not a GUID, assume it is a workspace name and retrieve the workspace ID.
+  $destinationWorkspaceId = $DestinationWorkspace -match $guidMatch ? $DestinationWorkspace : (Get-PbiFabWorkspaceId -WorkspaceName $DestinationWorkspace)
 }
 
 process {
@@ -105,13 +105,13 @@ process {
     }
     Write-Host $selectedNotebooks
   }
-  # Copy each notebook to the target workspace.
+  # Copy each notebook to the destination workspace.
   foreach ($notebook in $selectedNotebooks) {
     $notebookId = $notebook.Id
     $notebookName = $notebook.Name
     try {
       $notebookContent = Invoke-RestMethod -Method GET -Uri "$fabricUri/$sourceWorkspaceId/items/$notebookId/content" -Headers $headers
-      $notebookContent | Invoke-RestMethod -Method POST -Uri "$fabricUri/$targetWorkspaceId/items" -Headers $headers
+      $notebookContent | Invoke-RestMethod -Method POST -Uri "$fabricUri/$destinationWorkspaceId/items" -Headers $headers
       Write-Host "📋 Notebook '$notebookName' (ID: $notebookId) copied successfully."
     }
     catch {
