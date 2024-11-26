@@ -93,7 +93,7 @@ begin {
 
 process {
   # Retrieve a list of all notebooks in the source workspace.
-  $notebooksList = Invoke-RestMethod -Method GET -Uri "$fabricUri/$sourceWorkspaceId/items?type=Notebook" -Headers $headers
+  $notebooksList = (Invoke-RestMethod -Method GET -Uri "$fabricUri/$sourceWorkspaceId/notebooks" -Headers $headers).value
   # If Notebooks parameter is left blank, list all notebooks in the source workspace and prompt the user to select one or more of them.
   if (-not $Notebooks) {
     $selectedNotebooks = $notebooksList | Out-ConsoleGridView -Title 'Select notebook(s) to copy'
@@ -109,9 +109,14 @@ process {
   foreach ($notebook in $selectedNotebooks) {
     $notebookId = $notebook.Id
     $notebookName = $notebook.Name
+    $notebookDescription = $notebook.Description
     try {
-      $notebookContent = Invoke-RestMethod -Method GET -Uri "$fabricUri/$sourceWorkspaceId/items/$notebookId/content" -Headers $headers
-      $notebookContent | Invoke-RestMethod -Method POST -Uri "$fabricUri/$destinationWorkspaceId/items" -Headers $headers
+      $notebookDefinition = (Invoke-RestMethod -Method POST -Uri "$fabricUri/$sourceWorkspaceId/notebooks/$notebookId/getDefinition" -Headers $headers).value
+      $notebookDefinition | Add-Member -MemberType NoteProperty -Name 'displayName' -Value $notebookName
+      $notebookDefinition | Add-Member -MemberType NoteProperty -Name 'description' -Value $notebookDescription
+      $requestBody = $notebookDefinition | ConvertTo-Json -Depth 100
+      $response = Invoke-RestMethod -Method POST -Uri "$fabricUri/$destinationWorkspaceId/notebooks" -Headers $headers -Body $requestBody
+      Write-Host $response
       Write-Host "📋 Notebook '$notebookName' (ID: $notebookId) copied successfully."
     }
     catch {
