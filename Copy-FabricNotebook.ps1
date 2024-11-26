@@ -96,7 +96,7 @@ process {
   $notebooksList = Invoke-RestMethod -Method GET -Uri "$fabricUri/$sourceWorkspaceId/items?type=Notebook" -Headers $headers
   # If Notebooks parameter is left blank, list all notebooks in the source workspace and prompt the user to select one or more of them.
   if (-not $Notebooks) {
-    $selectedNotebooks = Show-ConsoleListView -Title 'Select notebook(s) to copy' -Items $notebooksList -MultiSelect
+    $selectedNotebooks = $notebooksList | Out-ConsoleGridView -Title 'Select notebook(s) to copy'
     Write-Host $selectedNotebooks
   }
   else {
